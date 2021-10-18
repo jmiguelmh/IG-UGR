@@ -337,7 +337,7 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num)
   }
 
   // tapa superior
-  if (fabs(perfil[0].x) > 0.0)
+  if (fabs(perfil[num_aux - 1].x) > 0.0)
   {
     vertice_aux.x = 0;
     vertice_aux.y = perfil[perfil.size() - 1].y;
@@ -357,7 +357,7 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num)
   }
 
   // tapa inferior
-  if (fabs(perfil[num_aux - 1].x) > 0.0)
+  if (fabs(perfil[0].x) > 0.0)
   {
     vertice_aux.x = 0;
     vertice_aux.y = perfil[0].y;
@@ -451,11 +451,9 @@ _cono::_cono(float radio, float altura, int resolucion)
 
 _cilindro::_cilindro(float radio, float altura, int resolucion)
 {
-  int i, j;
-  _vertex3f vertice_aux;
-  _vertex3i cara_aux;
-  int num_aux;
   vector<_vertex3f> perfil;
+  _vertex3f vertice_aux;
+  _rotacion cilindro;
 
   vertice_aux.x = radio;
   vertice_aux.y = 0.0;
@@ -467,83 +465,9 @@ _cilindro::_cilindro(float radio, float altura, int resolucion)
   vertice_aux.z = 0.0;
   perfil.push_back(vertice_aux);
 
-  // tratamiento de los vértice
-  num_aux = perfil.size();
-  vertices.resize(num_aux * resolucion);
-  for (j = 0; j < resolucion; j++)
-  {
-    for (i = 0; i < num_aux; i++)
-    {
-      vertice_aux.x = perfil[i].x * cos(2.0 * M_PI * j / (1.0 * resolucion)) +
-                      perfil[i].z * sin(2.0 * M_PI * j / (1.0 * resolucion));
-      vertice_aux.z = -perfil[i].x * sin(2.0 * M_PI * j / (1.0 * resolucion)) +
-                      perfil[i].z * cos(2.0 * M_PI * j / (1.0 * resolucion));
-      vertice_aux.y = perfil[i].y;
-      vertices[i + j * num_aux] = vertice_aux;
-    }
-  }
-
-  vertice_aux.x = 0.0;
-  vertice_aux.y = altura;
-  vertice_aux.z = 0.0;
-  vertices.push_back(vertice_aux);
-
-  // tratamiento de las caras
-  for (j = 0; j < resolucion; j++)
-  {
-    for (i = 0; i < num_aux - 1; i++)
-    {
-      cara_aux._0 = i + ((j + 1) % resolucion) * num_aux;
-      cara_aux._1 = i + 1 + ((j + 1) % resolucion) * num_aux;
-      cara_aux._2 = i + 1 + j * num_aux;
-      caras.push_back(cara_aux);
-
-      cara_aux._0 = i + 1 + j * num_aux;
-      cara_aux._1 = i + j * num_aux;
-      cara_aux._2 = i + ((j + 1) % resolucion) * num_aux;
-      caras.push_back(cara_aux);
-    }
-  }
-
-  // tapa superior
-  if (fabs(perfil[0].x) > 0.0)
-  {
-    vertice_aux.x = 0;
-    vertice_aux.y = radio;
-    vertice_aux.z = 0;
-    vertices.push_back(vertice_aux);
-
-    for (i = 0; i < resolucion; i++)
-    {
-      cara_aux._0 = vertices.size() - 1;
-      cara_aux._1 = i * num_aux + num_aux - 1;
-      if (i == (resolucion - 1))
-        cara_aux._2 = num_aux - 1;
-      else
-        cara_aux._2 = num_aux * (i + 1) + num_aux - 1;
-      caras.push_back(cara_aux);
-    }
-  }
-
-  // tapa inferior
-  if (fabs(perfil[num_aux - 1].x) > 0.0)
-  {
-    vertice_aux.x = 0;
-    vertice_aux.y = perfil[0].y;
-    vertice_aux.z = 0;
-    vertices.push_back(vertice_aux);
-
-    for (i = 0; i < resolucion; i++)
-    {
-      cara_aux._0 = vertices.size() - 1;
-      cara_aux._1 = i * num_aux;
-      if (i == (resolucion - 1))
-        cara_aux._2 = 0;
-      else
-        cara_aux._2 = num_aux * (i + 1);
-      caras.push_back(cara_aux);
-    }
-  }
+  cilindro.parametros(perfil,resolucion);
+  vertices = cilindro.vertices;
+  caras = cilindro.caras;
 }
 
 //*************************************************************************
@@ -552,90 +476,19 @@ _cilindro::_cilindro(float radio, float altura, int resolucion)
 
 _esfera::_esfera(float radio, int resolucion)
 {
-  int i, j;
-  _vertex3f vertice_aux;
-  _vertex3i cara_aux;
-  int num_aux;
   vector<_vertex3f> perfil;
+  _vertex3f vertice_aux;
+  _rotacion esfera;
 
-  for (i = 0; i < resolucion; i++)
+  for (int i = 1; i < resolucion; i++)
   {
     vertice_aux.x = cos(i * M_PI / resolucion - M_PI/2) * radio;
     vertice_aux.y = sin(i * M_PI / resolucion - M_PI/2) * radio;
     vertice_aux.z = 0.0;
     perfil.push_back(vertice_aux);
   }
-  
-  // tratamiento de los vértices
-  num_aux = perfil.size();
-  vertices.resize(num_aux * resolucion);
-  for (j = 0; j < resolucion; j++)
-  {
-    for (i = 0; i < num_aux; i++)
-    {
-      vertice_aux.x = perfil[i].x * cos(2.0 * M_PI * j / (1.0 * resolucion)) +
-                      perfil[i].z * sin(2.0 * M_PI * j / (1.0 * resolucion));
-      vertice_aux.z = -perfil[i].x * sin(2.0 * M_PI * j / (1.0 * resolucion)) +
-                      perfil[i].z * cos(2.0 * M_PI * j / (1.0 * resolucion));
-      vertice_aux.y = perfil[i].y;
-      vertices[i + j * num_aux] = vertice_aux;
-    }
-  }
 
-  // tratamiento de las caras
-  for (j = 0; j < resolucion; j++)
-  {
-    for (i = 0; i < num_aux - 1; i++)
-    {
-      cara_aux._0 = i + ((j + 1) % resolucion) * num_aux;
-      cara_aux._1 = i + 1 + ((j + 1) % resolucion) * num_aux;
-      cara_aux._2 = i + 1 + j * num_aux;
-      caras.push_back(cara_aux);
-
-      cara_aux._0 = i + 1 + j * num_aux;
-      cara_aux._1 = i + j * num_aux;
-      cara_aux._2 = i + ((j + 1) % resolucion) * num_aux;
-      caras.push_back(cara_aux);
-    }
-  }
-
-    // tapa superior
-  if (fabs(perfil[0].x) > 0.0)
-  {
-    vertice_aux.x = 0;
-    vertice_aux.y = perfil[perfil.size() - 1].y;
-    vertice_aux.z = 0;
-    vertices.push_back(vertice_aux);
-
-    for (i = 0; i < resolucion; i++)
-    {
-      cara_aux._0 = vertices.size() - 1;
-      cara_aux._1 = i * num_aux + num_aux - 1;
-      if (i == (resolucion - 1))
-        cara_aux._2 = num_aux - 1;
-      else
-        cara_aux._2 = num_aux * (i + 1) + num_aux - 1;
-      caras.push_back(cara_aux);
-    }
-  }
-  
-  // tapa inferior
-  if (fabs(perfil[num_aux - 1].x) > 0.0)
-  {
-    vertice_aux.x = 0;
-    vertice_aux.y = -radio;
-    vertice_aux.z = 0;
-    vertices.push_back(vertice_aux);
-
-    for (i = 0; i < resolucion; i++)
-    {
-      cara_aux._0 = vertices.size() - 1;
-      cara_aux._1 = i * num_aux;
-      if (i == (resolucion - 1))
-        cara_aux._2 = 0;
-      else
-        cara_aux._2 = num_aux * (i + 1);
-      caras.push_back(cara_aux);
-    }
-  }
+  esfera.parametros(perfil,resolucion);
+  vertices = esfera.vertices;
+  caras = esfera.caras;
 }

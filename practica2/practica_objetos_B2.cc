@@ -40,9 +40,9 @@ _cubo cubo;
 _piramide piramide(0.85, 1.3);
 _objeto_ply ply;
 _rotacion rotacion;
-_cono cono(0.5,1.0,50);
-_cilindro cilindro(0.5,1.0,50);
-_esfera esfera(1,50);
+_cono cono(0.5,1.0,25);
+_cilindro cilindro(0.5,1.0,25);
+_esfera esfera(1,25);
 
 // _objeto_ply *ply1;
 
@@ -304,29 +304,9 @@ void initialize(void)
 int main(int argc, char *argv[])
 {
 
-	// perfil
-
-	vector<_vertex3f> perfil2;
-	_vertex3f aux;
-
-	aux.x = 1.0;
-	aux.y = -0.5;
-	aux.z = 0.0;
-	perfil2.push_back(aux);
-	aux.x = 0.5;
-	aux.y = 0.0;
-	aux.z = 0.0;
-	perfil2.push_back(aux);
-	aux.x = 0.75;
-	aux.y = 0.5;
-	aux.z = 0.0;
-	perfil2.push_back(aux);
-	aux.x = 0.25;
-	aux.y = 0.75;
-	aux.z = 0.0;
-	perfil2.push_back(aux);
-
-	rotacion.parametros(perfil2, 25);
+	_objeto_ply objeto_rotado;
+	objeto_rotado.parametros(argv[1]);
+	rotacion.parametros(objeto_rotado.vertices, 10);
 
 	// se llama a la inicialización de glut
 	glutInit(&argc, argv);
