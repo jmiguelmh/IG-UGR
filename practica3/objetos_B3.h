@@ -131,12 +131,12 @@ public:
     _monigote();
 	void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
 
-	float giro_brazo_izquierdo_x;
-	float giro_brazo_derecho_x;
-	float giro_brazo_izquierdo_z;
-	float giro_brazo_derecho_z;
-	float giro_pierna_izquierda;
-	float giro_pierna_derecha;
+	float giro_brazo_1;
+	float giro_brazo_2;
+	float giro_antebrazo;
+	float giro_pierna_superior;
+	float giro_pierna_inferior;
+	float giro_cabeza;
 
 protected:
 	_cubo cubo;
