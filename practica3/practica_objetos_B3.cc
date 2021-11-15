@@ -25,7 +25,11 @@ typedef enum
 _tipo_objeto t_objeto = CUBO;
 _modo modo = POINTS;
 bool animacion = false;
-double velocidad_animacion = 1.0;
+double animacion_cabeza = 1.0;
+double animacion_brazo = 1.0;
+double animacion_antebrazo = 1.0;
+double animacion_pierna_superior = 1.0;
+double animacion_pierna_inferior = 1.0;
 
 // variables que definen la posicion de la camara en coordenadas polares
 GLfloat Observer_distance;
@@ -43,8 +47,8 @@ _cubo cubo;
 _piramide piramide(0.85, 1.3);
 _objeto_ply ply;
 _rotacion rotacion;
-_cono cono(1,1.0,'y');
-_cilindro cilindro(0.5,1.0,'y');
+_cono cono(1, 1.0, 'y');
+_cilindro cilindro(0.5, 1.0, 'y');
 _esfera esfera(1);
 _monigote articulado;
 
@@ -148,8 +152,6 @@ void draw_objects()
 		articulado.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
 		break;
 	}
-
-	
 }
 
 //**************************************************************************
@@ -183,6 +185,40 @@ void change_window_size(int Ancho1, int Alto1)
 	change_projection();
 	glViewport(0, 0, Ancho1, Alto1);
 	glutPostRedisplay();
+}
+
+// Animacion
+
+void movimiento()
+{
+	if (animacion)
+	{
+		articulado.giro_cabeza += animacion_cabeza;
+		if (articulado.giro_cabeza < -90.0 || articulado.giro_cabeza > 90.0)
+			animacion_cabeza = -animacion_cabeza;
+		
+		articulado.giro_brazo_1 += 0.3*animacion_brazo;
+		if (articulado.giro_brazo_1 > 90.0 || articulado.giro_brazo_1 < -90.0)
+			animacion_brazo = -animacion_brazo;
+		
+		articulado.giro_brazo_2 += animacion_brazo;
+		if (articulado.giro_brazo_2 > 0.0 || articulado.giro_brazo_2 < -90.0)
+			animacion_brazo = -animacion_brazo;
+		
+		articulado.giro_antebrazo += 0.5*animacion_antebrazo;
+		if (articulado.giro_antebrazo > 0.0 || articulado.giro_antebrazo < -90.0)
+			animacion_antebrazo = -animacion_antebrazo;
+
+		articulado.giro_pierna_superior += animacion_pierna_superior;
+		if (articulado.giro_pierna_superior < -90.0 || articulado.giro_pierna_superior > 0.0)
+			animacion_pierna_superior = -animacion_pierna_superior;
+		
+		articulado.giro_pierna_inferior += animacion_pierna_inferior;
+		if (articulado.giro_pierna_inferior < -180.0 || articulado.giro_pierna_inferior > 0.0)
+			animacion_pierna_inferior = -animacion_pierna_inferior;
+
+		glutPostRedisplay();
+	}
 }
 
 //**********-o*****************************************************************
@@ -236,6 +272,29 @@ void normal_key(unsigned char Tecla1, int x, int y)
 	case '8':
 		t_objeto = ARTICULADO;
 		break;
+	case ' ':
+		animacion = !animacion;
+		articulado.giro_brazo_1 = 0.0;
+		articulado.giro_brazo_2 = -90.0;
+		articulado.giro_antebrazo = 0.0;
+		articulado.giro_pierna_superior = -90.0;
+		articulado.giro_pierna_inferior = 0.0;
+		articulado.giro_cabeza = 0.0;
+		break;
+	case '+':
+		animacion_cabeza *= 2;
+		animacion_brazo *= 2;
+		animacion_antebrazo *= 2;
+		animacion_pierna_superior *= 2;
+		animacion_pierna_inferior *= 2;
+		break;
+	case '-':
+		animacion_cabeza *= 0.5;
+		animacion_brazo *= 0.5;
+		animacion_antebrazo *= 0.5;
+		animacion_pierna_superior *= 0.5;
+		animacion_pierna_inferior *= 0.5;
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -274,51 +333,51 @@ void special_key(int Tecla1, int x, int y)
 		Observer_distance /= 1.2;
 		break;
 	case GLUT_KEY_F1:
-		if(articulado.giro_brazo_1 < 90.0)
+		if (articulado.giro_brazo_1 < 90.0)
 			articulado.giro_brazo_1 += 1.0;
 		break;
 	case GLUT_KEY_F2:
-		if(articulado.giro_brazo_1 > -90.0)
+		if (articulado.giro_brazo_1 > -90.0)
 			articulado.giro_brazo_1 -= 1.0;
 		break;
 	case GLUT_KEY_F3:
-		if(articulado.giro_brazo_2 < 0.0)
+		if (articulado.giro_brazo_2 < 0.0)
 			articulado.giro_brazo_2 += 1.0;
 		break;
 	case GLUT_KEY_F4:
-		if(articulado.giro_brazo_2 > -90.0)
+		if (articulado.giro_brazo_2 > -90.0)
 			articulado.giro_brazo_2 -= 1.0;
 		break;
 	case GLUT_KEY_F5:
-		if(articulado.giro_antebrazo < 0.0)
+		if (articulado.giro_antebrazo < 0.0)
 			articulado.giro_antebrazo += 1.0;
 		break;
 	case GLUT_KEY_F6:
-		if(articulado.giro_antebrazo > -180.0)
+		if (articulado.giro_antebrazo > -180.0)
 			articulado.giro_antebrazo -= 1.0;
 		break;
 	case GLUT_KEY_F7:
-		if(articulado.giro_pierna_superior > -90.0)
+		if (articulado.giro_pierna_superior > -90.0)
 			articulado.giro_pierna_superior -= 1.0;
 		break;
 	case GLUT_KEY_F8:
-		if(articulado.giro_pierna_superior < 0.0)
+		if (articulado.giro_pierna_superior < 0.0)
 			articulado.giro_pierna_superior += 1.0;
 		break;
 	case GLUT_KEY_F9:
-		if(articulado.giro_pierna_inferior > -180.0)
+		if (articulado.giro_pierna_inferior > -180.0)
 			articulado.giro_pierna_inferior -= 1.0;
 		break;
 	case GLUT_KEY_F10:
-		if(articulado.giro_pierna_inferior < 0.0)
+		if (articulado.giro_pierna_inferior < 0.0)
 			articulado.giro_pierna_inferior += 1.0;
 		break;
 	case GLUT_KEY_F11:
-		if(articulado.giro_cabeza > -90.0)
+		if (articulado.giro_cabeza > -90.0)
 			articulado.giro_cabeza -= 1.0;
 		break;
 	case GLUT_KEY_F12:
-		if(articulado.giro_cabeza < 90.0)
+		if (articulado.giro_cabeza < 90.0)
 			articulado.giro_cabeza += 1.0;
 		break;
 	}
@@ -365,7 +424,7 @@ int main(int argc, char *argv[])
 
 	_objeto_ply objeto_rotado;
 	objeto_rotado.parametros(argv[1]);
-	rotacion.parametros(objeto_rotado.vertices,10,'y');
+	rotacion.parametros(objeto_rotado.vertices, 10, 'y');
 
 	// se llama a la inicialización de glut
 	glutInit(&argc, argv);
@@ -399,6 +458,8 @@ int main(int argc, char *argv[])
 	glutKeyboardFunc(normal_key);
 	// asignación de la funcion llamada "tecla_Especial" al evento correspondiente
 	glutSpecialFunc(special_key);
+
+	glutIdleFunc(movimiento);
 
 	// funcion de inicialización
 	initialize();
