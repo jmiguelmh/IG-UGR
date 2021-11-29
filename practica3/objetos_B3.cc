@@ -567,7 +567,6 @@ _monigote::_monigote()
 
 void _monigote::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
 {
-
 	// Cuerpo
 	glPushMatrix();
 	glScalef(1.0, 1.25, 0.5);

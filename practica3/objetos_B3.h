@@ -108,7 +108,7 @@ public:
 class _cilindro : public _triangulos3D
 {
 public:
-	_cilindro(float radio, float altura, char eje);
+	_cilindro(float radio = 0.5, float altura = 1.0, char eje = 'y');
 };
 
 //************************************************************************
