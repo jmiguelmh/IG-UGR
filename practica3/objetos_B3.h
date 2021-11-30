@@ -125,19 +125,75 @@ public:
 // clase modelo articulado
 //************************************************************************
 
+class _brazo_izquierdo: public _triangulos3D
+{
+public:
+    _brazo_izquierdo();
+	void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+
+	float giro_brazo_1;
+	float giro_brazo_2;
+	float giro_antebrazo;
+
+protected:
+	_rotacion rotacion;
+};
+
+class _brazo_derecho: public _triangulos3D
+{
+public:
+    _brazo_derecho();
+	void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+
+	float giro_brazo_1;
+	float giro_brazo_2;
+	float giro_antebrazo;
+
+protected:
+	_rotacion rotacion;
+};
+
+class _pierna: public _triangulos3D
+{
+public:
+    _pierna();
+	void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+
+	float giro_pierna_superior;
+	float giro_pierna_inferior;
+
+protected:
+	_rotacion rotacion;
+};
+
+class _cuerpo : public _triangulos3D
+{
+public:
+	_cuerpo(float tam = 0.5);
+};
+
+class _cabeza: public _triangulos3D
+{
+public:
+    _cabeza();
+	void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+
+	float giro_cabeza;
+
+protected:
+	_rotacion rotacion;
+	_rotacion cuello;
+};
+
 class _monigote: public _triangulos3D
 {
 public:
     _monigote();
 	void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
 
-	float giro_brazo_1;
-	float giro_brazo_2;
-	float giro_antebrazo;
-	float giro_pierna_superior;
-	float giro_pierna_inferior;
-	float giro_cabeza;
-
-protected:
-	_cubo cubo;
+	_brazo_izquierdo brazo_izquierdo;
+	_brazo_derecho brazo_derecho;
+	_pierna pierna;
+	_cuerpo cuerpo;
+	_cabeza cabeza;
 };

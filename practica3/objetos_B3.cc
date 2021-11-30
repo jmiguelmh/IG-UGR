@@ -555,133 +555,301 @@ _cilindro::_cilindro(float radio, float altura, char eje)
 
 // Modelo articulado monigote
 
-_monigote::_monigote()
+_brazo_izquierdo::_brazo_izquierdo()
 {
 	giro_brazo_1 = 0.0;
-	giro_brazo_2 = -90.0;
+	giro_brazo_2 = 90.0;
 	giro_antebrazo = 0.0;
-	giro_pierna_superior = -90.0;
-	giro_pierna_inferior = 0.0;
-	giro_cabeza = 0.0;
+
+	vector<_vertex3f> perfil;
+	_vertex3f punto;
+
+	for (double i = -M_PI / 2; i <= 0.0; i += M_PI / 18)
+	{
+		punto.x = cos(i) * 0.3;
+		punto.y = sin(i) * 0.3 - 0.7;
+		punto.z = 0.0;
+		perfil.push_back(punto);
+	}
+
+	for (double i = 0.0; i <= M_PI / 2; i += M_PI / 18)
+	{
+		punto.x = cos(i) * 0.3;
+		punto.y = sin(i) * 0.3 + 0.7;
+		punto.z = 0.0;
+		perfil.push_back(punto);
+	}
+
+	rotacion.parametros(perfil, 10, 'y');
+	vertices = rotacion.vertices;
+	caras = rotacion.caras;
 };
+
+void _brazo_izquierdo::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
+{
+	glPushMatrix();
+	glRotatef(giro_brazo_1, 1.0, 0.0, 0.0);
+	glRotatef(giro_brazo_2, 0.0, 0.0, 1.0);
+	glTranslatef(0.0, -1.0, 0.0);
+	rotacion.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	glPushMatrix();
+	glTranslatef(0.0, -1.0, 0.0);
+	glRotatef(giro_antebrazo, 1.0, 0.0, 0.0);
+	glTranslatef(0.0, -1.0, 0.0);
+	rotacion.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	glPopMatrix();
+	glPopMatrix();
+};
+
+_brazo_derecho::_brazo_derecho()
+{
+	giro_brazo_1 = 0.0;
+	giro_brazo_2 = 90.0;
+	giro_antebrazo = 0.0;
+
+	vector<_vertex3f> perfil;
+	_vertex3f punto;
+
+	for (double i = -M_PI / 2; i <= 0.0; i += M_PI / 18)
+	{
+		punto.x = cos(i) * 0.3;
+		punto.y = sin(i) * 0.3 - 0.7;
+		punto.z = 0.0;
+		perfil.push_back(punto);
+	}
+
+	for (double i = 0.0; i <= M_PI / 2; i += M_PI / 18)
+	{
+		punto.x = cos(i) * 0.3;
+		punto.y = sin(i) * 0.3 + 0.7;
+		punto.z = 0.0;
+		perfil.push_back(punto);
+	}
+
+	rotacion.parametros(perfil, 10, 'y');
+	vertices = rotacion.vertices;
+	caras = rotacion.caras;
+};
+
+void _brazo_derecho::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
+{
+	glPushMatrix();
+	glRotatef(giro_brazo_1, 1.0, 0.0, 0.0);
+	glRotatef(-giro_brazo_2, 0.0, 0.0, 1.0);
+	glTranslatef(0.0, -1.0, 0.0);
+	rotacion.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	glPushMatrix();
+	glTranslatef(0.0, -1.0, 0.0);
+	glRotatef(giro_antebrazo, 1.0, 0.0, 0.0);
+	glTranslatef(0.0, -1.0, 0.0);
+	rotacion.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	glPopMatrix();
+	glPopMatrix();
+};
+
+_pierna::_pierna()
+{
+	giro_pierna_superior = 0.0;
+	giro_pierna_inferior = 0.0;
+
+	vector<_vertex3f> perfil;
+	_vertex3f punto;
+
+	for (double i = -M_PI / 2; i <= 0.0; i += M_PI / 18)
+	{
+		punto.x = cos(i) * 0.3;
+		punto.y = sin(i) * 0.3 - 0.7;
+		punto.z = 0.0;
+		perfil.push_back(punto);
+	}
+
+	for (double i = 0.0; i <= M_PI / 2; i += M_PI / 18)
+	{
+		punto.x = cos(i) * 0.3;
+		punto.y = sin(i) * 0.3 + 0.7;
+		punto.z = 0.0;
+		perfil.push_back(punto);
+	}
+
+	rotacion.parametros(perfil, 10, 'y');
+	vertices = rotacion.vertices;
+	caras = rotacion.caras;
+};
+
+void _pierna::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
+{
+	glPushMatrix();
+	glRotatef(giro_pierna_superior, 1.0, 0.0, 0.0);
+	glTranslatef(0.0, -1.0, 0.0);
+	rotacion.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	glPushMatrix();
+	glTranslatef(0.0, -1.0, 0.0);
+	glRotatef(giro_pierna_inferior, 1.0, 0.0, 0.0);
+	glTranslatef(0.0, -1.0, 0.0);
+	rotacion.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	glPopMatrix();
+	glPopMatrix();
+};
+
+_cuerpo::_cuerpo(float tam)
+{
+	//vertices
+	vertices.resize(8);
+
+	vertices[0].x = -tam * 0.75;
+	vertices[0].y = 0;
+	vertices[0].z = tam * 0.75;
+	vertices[1].x = tam * 0.75;
+	vertices[1].y = 0;
+	vertices[1].z = tam * 0.75;
+	vertices[2].x = tam * 0.75;
+	vertices[2].y = 0;
+	vertices[2].z = -tam * 0.75;
+	vertices[3].x = -tam * 0.75;
+	vertices[3].y = 0;
+	vertices[3].z = -tam;
+	vertices[4].x = -tam;
+	vertices[4].y = 2 * tam;
+	vertices[4].z = tam;
+	vertices[5].x = tam;
+	vertices[5].y = 2 * tam;
+	vertices[5].z = tam;
+	vertices[6].x = tam;
+	vertices[6].y = 2 * tam;
+	vertices[6].z = -tam;
+	vertices[7].x = -tam;
+	vertices[7].y = 2 * tam;
+	vertices[7].z = -tam;
+
+	// triangulos
+	caras.resize(12);
+
+	caras[0]._0 = 0;
+	caras[0]._1 = 1;
+	caras[0]._2 = 5;
+	caras[1]._0 = 0;
+	caras[1]._1 = 4;
+	caras[1]._2 = 5;
+	caras[2]._0 = 1;
+	caras[2]._1 = 2;
+	caras[2]._2 = 6;
+	caras[3]._0 = 1;
+	caras[3]._1 = 5;
+	caras[3]._2 = 6;
+	caras[4]._0 = 2;
+	caras[4]._1 = 3;
+	caras[4]._2 = 7;
+	caras[5]._0 = 2;
+	caras[5]._1 = 6;
+	caras[5]._2 = 7;
+	caras[6]._0 = 3;
+	caras[6]._1 = 0;
+	caras[6]._2 = 4;
+	caras[7]._0 = 3;
+	caras[7]._1 = 4;
+	caras[7]._2 = 7;
+	caras[8]._0 = 0;
+	caras[8]._1 = 1;
+	caras[8]._2 = 3;
+	caras[9]._0 = 1;
+	caras[9]._1 = 2;
+	caras[9]._2 = 3;
+	caras[10]._0 = 4;
+	caras[10]._1 = 5;
+	caras[10]._2 = 6;
+	caras[11]._0 = 4;
+	caras[11]._1 = 6;
+	caras[11]._2 = 7;
+}
+
+_cabeza::_cabeza()
+{
+	giro_cabeza = 0.0;
+
+	vector<_vertex3f> perfil;
+	_vertex3f punto;
+
+	for (double i = -M_PI / 2; i <= M_PI/2; i += M_PI / 18)
+	{
+		punto.x = cos(i) * 0.3;
+		punto.y = sin(i) * 0.3 + 0.15;
+		punto.z = 0.0;
+		perfil.push_back(punto);
+	}
+
+	rotacion.parametros(perfil, 10, 'y');
+	vertices = rotacion.vertices;
+	caras = rotacion.caras;
+
+	perfil.clear();
+	punto.x = 0.1;
+	punto.y = 0.0;
+	punto.z = 0.0;
+	perfil.push_back(punto);
+
+	punto.x = 0.1;
+	punto.y = 0.15;
+	punto.z = 0.0;
+	perfil.push_back(punto);
+
+	cuello.parametros(perfil, 10, 'y');
+	vertices = cuello.vertices;
+	caras = cuello.caras;
+};
+
+void _cabeza::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
+{
+	glPushMatrix();
+	glRotatef(giro_cabeza, 0.0, 1.0, 0.0);
+	glPushMatrix();
+	cuello.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	glTranslatef(0.0, 0.25, 0.0);
+	rotacion.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	glPopMatrix();
+	glPopMatrix();
+};
+
+_monigote::_monigote(){};
 
 void _monigote::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
 {
 	// Cuerpo
 	glPushMatrix();
 	glScalef(1.0, 1.25, 0.5);
-	cubo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-	glPopMatrix();
-
-	// Cabeza
-	glPushMatrix();
-	glTranslatef(0.0, 1.25, 0.0);
-	glRotatef(giro_cabeza, 0.0, 1.0, 0.0);
-	glScalef(0.3, 0.3, 0.3);
-	cubo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	cuerpo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
 
 	// Brazo izquierdo
 	glPushMatrix();
 	glTranslatef(0.5, 1.15, 0.0);
-	glRotatef(-90.0, 0.0, 1.0, 0.0);
-	glRotatef(180.0, 1.0, 0.0, 0.0);
-	glScalef(0.4, 0.4, 0.4);
-
-	glPushMatrix();
-	glRotatef(giro_brazo_1, 0.0, 0.0, 1.0);
-	glRotatef(giro_brazo_2, 0.0, 1.0, 0.0);
-	glTranslatef(1.0, -0.25, 0.0);
-	glPushMatrix();
-	glScalef(2.0, 0.5, 0.5);
-	cubo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	glScalef(0.5, 0.5, 0.5);
+	brazo_izquierdo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
 
-	glTranslatef(1.0, 0.0, 0.0);
-	glRotatef(giro_antebrazo, 0.0, 0.0, 1.0);
-	glTranslatef(1.0, 0.0, 0.0);
-
-	glPushMatrix();
-	glScalef(2.0, 0.5, 0.5);
-	cubo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-	glPopMatrix();
-	glPopMatrix();
-	glPopMatrix();
-
-	// Brazo derecho
+	// Brazo derecha
 	glPushMatrix();
 	glTranslatef(-0.5, 1.15, 0.0);
-	glRotatef(-90.0, 0.0, 1.0, 0.0);
-	glRotatef(180.0, 1.0, 0.0, 0.0);
-	glScalef(0.4, 0.4, 0.4);
-
-	glPushMatrix();
-	glRotatef(giro_brazo_1, 0.0, 0.0, 1.0);
-	glRotatef(-giro_brazo_2, 0.0, 1.0, 0.0);
-	glTranslatef(1.0, -0.25, 0.0);
-	glPushMatrix();
-	glScalef(2.0, 0.5, 0.5);
-	cubo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-	glPopMatrix();
-
-	glTranslatef(1.0, 0.0, 0.0);
-	glRotatef(giro_antebrazo, 0.0, 0.0, 1.0);
-	glTranslatef(1.0, 0.0, 0.0);
-
-	glPushMatrix();
-	glScalef(2.0, 0.5, 0.5);
-	cubo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-	glPopMatrix();
-	glPopMatrix();
+	glScalef(0.5, 0.5, 0.5);
+	brazo_derecho.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
 
 	// Pierna izquierda
 	glPushMatrix();
-	glTranslatef(0.3, 0, 0.0);
-	glRotatef(-90.0, 0.0, 1.0, 0.0);
+	glTranslatef(0.2, 0.0, 0.0);
 	glScalef(0.5, 0.5, 0.5);
-
-	glPushMatrix();
-	glRotatef(giro_pierna_superior, 0.0, 0.0, 1.0);
-	glTranslatef(1.0, -0.25, 0.0);
-	glPushMatrix();
-	glScalef(2.0, 0.5, 0.5);
-	cubo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-	glPopMatrix();
-
-	glTranslatef(1.0, 0.0, 0.0);
-	glRotatef(giro_pierna_inferior, 0.0, 0.0, 1.0);
-	glTranslatef(1.0, 0.0, 0.0);
-
-	glPushMatrix();
-	glScalef(2.0, 0.5, 0.5);
-	cubo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-	glPopMatrix();
-	glPopMatrix();
+	pierna.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
 
 	// Pierna derecha
 	glPushMatrix();
-	glTranslatef(-0.3, 0, 0.0);
-	glRotatef(-90.0, 0.0, 1.0, 0.0);
+	glTranslatef(-0.2, 0.0, 0.0);
 	glScalef(0.5, 0.5, 0.5);
-
-	glPushMatrix();
-	glRotatef(giro_pierna_superior, 0.0, 0.0, 1.0);
-	glTranslatef(1.0, -0.25, 0.0);
-	glPushMatrix();
-	glScalef(2.0, 0.5, 0.5);
-	cubo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	pierna.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
 
-	glTranslatef(1.0, 0.0, 0.0);
-	glRotatef(giro_pierna_inferior, 0.0, 0.0, 1.0);
-	glTranslatef(1.0, 0.0, 0.0);
-
+	// Cabeza
 	glPushMatrix();
-	glScalef(2.0, 0.5, 0.5);
-	cubo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-	glPopMatrix();
-	glPopMatrix();
+	glTranslatef(0.0, 1.25, 0.0);
+	cabeza.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
 };

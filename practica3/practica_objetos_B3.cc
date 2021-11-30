@@ -26,8 +26,10 @@ _tipo_objeto t_objeto = CUBO;
 _modo modo = POINTS;
 bool animacion = false;
 double animacion_cabeza = 1.0;
-double animacion_brazo = 1.0;
-double animacion_antebrazo = 1.0;
+double animacion_brazo_izquierdo = 1.0;
+double animacion_brazo_derecho = 1.0;
+double animacion_antebrazo_izquierdo = 1.0;
+double animacion_antebrazo_derecho = 1.0;
 double animacion_pierna_superior = 1.0;
 double animacion_pierna_inferior = 1.0;
 
@@ -193,28 +195,40 @@ void movimiento()
 {
 	if (animacion)
 	{
-		articulado.giro_cabeza += animacion_cabeza;
-		if (articulado.giro_cabeza < -90.0 || articulado.giro_cabeza > 90.0)
+		articulado.cabeza.giro_cabeza += animacion_cabeza;
+		if (articulado.cabeza.giro_cabeza < -90.0 || articulado.cabeza.giro_cabeza > 90.0)
 			animacion_cabeza = -animacion_cabeza;
 		
-		articulado.giro_brazo_1 += 0.3*animacion_brazo;
-		if (articulado.giro_brazo_1 > 90.0 || articulado.giro_brazo_1 < -90.0)
-			animacion_brazo = -animacion_brazo;
+		articulado.brazo_izquierdo.giro_brazo_1 += 0.3*animacion_brazo_izquierdo;
+		if (articulado.brazo_izquierdo.giro_brazo_1 > 0.0 || articulado.brazo_izquierdo.giro_brazo_1 < -180.0)
+			animacion_brazo_izquierdo = -animacion_brazo_izquierdo;
 		
-		articulado.giro_brazo_2 += animacion_brazo;
-		if (articulado.giro_brazo_2 > 0.0 || articulado.giro_brazo_2 < -90.0)
-			animacion_brazo = -animacion_brazo;
+		articulado.brazo_izquierdo.giro_brazo_2 += animacion_brazo_izquierdo;
+		if (articulado.brazo_izquierdo.giro_brazo_2 > 90.0 || articulado.brazo_izquierdo.giro_brazo_2 < 0.0)
+			animacion_brazo_izquierdo = -animacion_brazo_izquierdo;
 		
-		articulado.giro_antebrazo += 0.5*animacion_antebrazo;
-		if (articulado.giro_antebrazo > 0.0 || articulado.giro_antebrazo < -90.0)
-			animacion_antebrazo = -animacion_antebrazo;
+		articulado.brazo_izquierdo.giro_antebrazo += 0.5*animacion_antebrazo_izquierdo;
+		if (articulado.brazo_izquierdo.giro_antebrazo > 0.0 || articulado.brazo_izquierdo.giro_antebrazo < -90.0)
+			animacion_antebrazo_izquierdo = -animacion_antebrazo_izquierdo;
 
-		articulado.giro_pierna_superior += animacion_pierna_superior;
-		if (articulado.giro_pierna_superior < -90.0 || articulado.giro_pierna_superior > 0.0)
+		articulado.brazo_derecho.giro_brazo_1 += 0.3*animacion_brazo_derecho;
+		if (articulado.brazo_derecho.giro_brazo_1 > 0.0 || articulado.brazo_derecho.giro_brazo_1 < -180.0)
+			animacion_brazo_derecho = -animacion_brazo_derecho;
+		
+		articulado.brazo_derecho.giro_brazo_2 += animacion_brazo_derecho;
+		if (articulado.brazo_derecho.giro_brazo_2 > 90.0 || articulado.brazo_derecho.giro_brazo_2 < 0.0)
+			animacion_brazo_derecho = -animacion_brazo_derecho;
+		
+		articulado.brazo_derecho.giro_antebrazo += 0.5*animacion_antebrazo_derecho;
+		if (articulado.brazo_derecho.giro_antebrazo > 0.0 || articulado.brazo_derecho.giro_antebrazo < -90.0)
+			animacion_antebrazo_derecho = -animacion_antebrazo_derecho;
+
+		articulado.pierna.giro_pierna_superior += animacion_pierna_superior;
+		if (articulado.pierna.giro_pierna_superior < -90.0 || articulado.pierna.giro_pierna_superior > 0.0)
 			animacion_pierna_superior = -animacion_pierna_superior;
 		
-		articulado.giro_pierna_inferior += animacion_pierna_inferior;
-		if (articulado.giro_pierna_inferior < -180.0 || articulado.giro_pierna_inferior > 0.0)
+		articulado.pierna.giro_pierna_inferior += animacion_pierna_inferior;
+		if (articulado.pierna.giro_pierna_inferior < 0.0 || articulado.pierna.giro_pierna_inferior > 90.0)
 			animacion_pierna_inferior = -animacion_pierna_inferior;
 
 		glutPostRedisplay();
@@ -274,24 +288,31 @@ void normal_key(unsigned char Tecla1, int x, int y)
 		break;
 	case ' ':
 		animacion = !animacion;
-		articulado.giro_brazo_1 = 0.0;
-		articulado.giro_brazo_2 = -90.0;
-		articulado.giro_antebrazo = 0.0;
-		articulado.giro_pierna_superior = -90.0;
-		articulado.giro_pierna_inferior = 0.0;
-		articulado.giro_cabeza = 0.0;
+		articulado.brazo_izquierdo.giro_brazo_1 = -90.0;
+		articulado.brazo_izquierdo.giro_brazo_2 = 45.0;
+		articulado.brazo_izquierdo.giro_antebrazo = -45.0;
+		articulado.brazo_derecho.giro_brazo_1 = -90.0;
+		articulado.brazo_derecho.giro_brazo_2 = 45.0;
+		articulado.brazo_derecho.giro_antebrazo = -45.0;
+		articulado.pierna.giro_pierna_superior = -45.0;
+		articulado.pierna.giro_pierna_inferior = 45.0;
+		articulado.cabeza.giro_cabeza = 0.0;
 		break;
 	case '+':
 		animacion_cabeza *= 2;
-		animacion_brazo *= 2;
-		animacion_antebrazo *= 2;
+		animacion_brazo_izquierdo *= 2;
+		animacion_antebrazo_izquierdo *= 2;
+		animacion_brazo_derecho *= 2;
+		animacion_antebrazo_derecho *= 2;
 		animacion_pierna_superior *= 2;
 		animacion_pierna_inferior *= 2;
 		break;
 	case '-':
 		animacion_cabeza *= 0.5;
-		animacion_brazo *= 0.5;
-		animacion_antebrazo *= 0.5;
+		animacion_brazo_izquierdo *= 0.5;
+		animacion_antebrazo_izquierdo *= 0.5;
+		animacion_brazo_derecho *= 0.5;
+		animacion_antebrazo_derecho *= 0.5;
 		animacion_pierna_superior *= 0.5;
 		animacion_pierna_inferior *= 0.5;
 		break;
@@ -333,52 +354,70 @@ void special_key(int Tecla1, int x, int y)
 		Observer_distance /= 1.2;
 		break;
 	case GLUT_KEY_F1:
-		if (articulado.giro_brazo_1 < 90.0)
-			articulado.giro_brazo_1 += 1.0;
+		if(articulado.brazo_izquierdo.giro_brazo_1 < 0.0)
+		{
+			articulado.brazo_izquierdo.giro_brazo_1++;
+			articulado.brazo_derecho.giro_brazo_1++;
+		}
 		break;
 	case GLUT_KEY_F2:
-		if (articulado.giro_brazo_1 > -90.0)
-			articulado.giro_brazo_1 -= 1.0;
+		if(articulado.brazo_izquierdo.giro_brazo_1 > -180.0)
+		{
+			articulado.brazo_izquierdo.giro_brazo_1--;
+			articulado.brazo_derecho.giro_brazo_1--;
+		}
 		break;
 	case GLUT_KEY_F3:
-		if (articulado.giro_brazo_2 < 0.0)
-			articulado.giro_brazo_2 += 1.0;
+		if(articulado.brazo_izquierdo.giro_brazo_2 < 90.0)
+		{
+			articulado.brazo_izquierdo.giro_brazo_2++;
+			articulado.brazo_derecho.giro_brazo_2++;
+		}
 		break;
 	case GLUT_KEY_F4:
-		if (articulado.giro_brazo_2 > -90.0)
-			articulado.giro_brazo_2 -= 1.0;
+		if(articulado.brazo_izquierdo.giro_brazo_2 > 0.0)
+		{
+			articulado.brazo_izquierdo.giro_brazo_2--;
+			articulado.brazo_derecho.giro_brazo_2--;
+		}
 		break;
 	case GLUT_KEY_F5:
-		if (articulado.giro_antebrazo < 0.0)
-			articulado.giro_antebrazo += 1.0;
+		if(articulado.brazo_izquierdo.giro_antebrazo < 0.0)
+		{
+			articulado.brazo_izquierdo.giro_antebrazo++;
+			articulado.brazo_derecho.giro_antebrazo++;
+		}
 		break;
 	case GLUT_KEY_F6:
-		if (articulado.giro_antebrazo > -180.0)
-			articulado.giro_antebrazo -= 1.0;
+		if(articulado.brazo_izquierdo.giro_antebrazo > -90.0)
+		{
+			articulado.brazo_izquierdo.giro_antebrazo--;
+			articulado.brazo_derecho.giro_antebrazo--;
+		}
 		break;
 	case GLUT_KEY_F7:
-		if (articulado.giro_pierna_superior > -90.0)
-			articulado.giro_pierna_superior -= 1.0;
+		if(articulado.pierna.giro_pierna_superior < 0.0)
+			articulado.pierna.giro_pierna_superior++;
 		break;
 	case GLUT_KEY_F8:
-		if (articulado.giro_pierna_superior < 0.0)
-			articulado.giro_pierna_superior += 1.0;
+		if(articulado.pierna.giro_pierna_superior > -90.0)
+			articulado.pierna.giro_pierna_superior--;
 		break;
 	case GLUT_KEY_F9:
-		if (articulado.giro_pierna_inferior > -180.0)
-			articulado.giro_pierna_inferior -= 1.0;
+		if(articulado.pierna.giro_pierna_inferior < 90.0)
+			articulado.pierna.giro_pierna_inferior++;
 		break;
 	case GLUT_KEY_F10:
-		if (articulado.giro_pierna_inferior < 0.0)
-			articulado.giro_pierna_inferior += 1.0;
+		if(articulado.pierna.giro_pierna_inferior > 0.0)
+			articulado.pierna.giro_pierna_inferior--;
 		break;
 	case GLUT_KEY_F11:
-		if (articulado.giro_cabeza > -90.0)
-			articulado.giro_cabeza -= 1.0;
+		if(articulado.cabeza.giro_cabeza < 90.0)
+			articulado.cabeza.giro_cabeza++;
 		break;
 	case GLUT_KEY_F12:
-		if (articulado.giro_cabeza < 90.0)
-			articulado.giro_cabeza += 1.0;
+		if(articulado.cabeza.giro_cabeza > -90.0)
+			articulado.cabeza.giro_cabeza--;
 		break;
 	}
 	glutPostRedisplay();
