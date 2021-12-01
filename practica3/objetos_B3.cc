@@ -271,7 +271,6 @@ int _objeto_ply::parametros(char *archivo)
 	n_ver = ver_ply.size() / 3;
 	n_car = car_ply.size() / 3;
 
-	printf("Number of vertices=%d\nNumber of faces=%d\n", n_ver, n_car);
 
 	vertices.resize(n_ver);
 
@@ -331,8 +330,6 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num, char eje)
 
 	else
 		modo = 3; //ambos vertices en eje
-
-	printf("\nModo de rotacion: %d\n\n", modo);
 
 	switch (modo)
 	{
@@ -432,10 +429,6 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num, char eje)
 	vertices.push_back(vertice_inferior);
 	vertices.push_back(vertice_superior);
 
-	// printf("\nVERTICES\n");
-	// for (int i = 0; i < vertices.size(); i++)
-	// 	printf("\nVertice %d: %f %f %f\n", i, vertices[i].x, vertices[i].y, vertices[i].z);
-
 	//Genereacion de caras
 	for (int i = 0; i < num_vertices - 1; i++)
 	{
@@ -473,10 +466,6 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num, char eje)
 		cara_aux._2 = num_vertices + 1; //tapa superior
 		caras.push_back(cara_aux);
 	}
-
-	// printf("\nVERTICES DE LAS CARAS\n");
-	// for (int i = 0; i < caras.size(); i++)
-	// 	printf("\nCara %d vertices: %d %d %d\n", i, caras[i]._0, caras[i]._1, caras[i]._2);
 }
 
 _cono::_cono(float diametro, float altura, char eje)
