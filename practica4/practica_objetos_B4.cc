@@ -268,7 +268,7 @@ void Luces()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, luz_difusa1);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, luz_especular1);
 
-	GLfloat luz_posicion2[] = {0.0, 1.0, 0.0, 0.0};
+	GLfloat luz_posicion2[] = {0.0, -1.0, 0.0, 0.0};
 	GLfloat luz_ambiente2[] = {0.2, 0.2, 0.2, 1.0};
 	GLfloat luz_difusa2[] = {0.2, 0.2, 0.2, 1.0};
 	GLfloat luz_especular2[] = {0.9, 0.8, 0.2, 1.0};
