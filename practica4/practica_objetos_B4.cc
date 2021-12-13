@@ -33,6 +33,8 @@ double animacion_antebrazo_derecho = 1.0;
 double animacion_pierna_superior = 1.0;
 double animacion_pierna_inferior = 1.0;
 
+bool rotarLuz = false;
+
 // variables que definen la posicion de la camara en coordenadas polares
 GLfloat Observer_distance;
 GLfloat Observer_angle_x;
@@ -237,33 +239,47 @@ void movimiento()
 
 // Luces
 
-float angulo = 0.0;
-GLfloat posicion[] = {3.0, 3.0, 0.0, 1.0};
+float angulo_luz1 = 0.0;
+GLfloat posicion_luz1[] = {3.0, 3.0, 3.0, 1.0};
 
 void moverLuz()
 {
-	angulo += 0.5;
-	glPushMatrix();
-	glRotated(angulo, 0, 1, 0);
-	glLightfv(GL_LIGHT0, GL_POSITION, posicion);
-	glPopMatrix();
+	if(rotarLuz)
+	{
+		angulo_luz1 += 0.5;
+		glPushMatrix();
+		glRotated(angulo_luz1, 0, 1, 0);
+		glLightfv(GL_LIGHT0, GL_POSITION, posicion_luz1);
+		glPopMatrix();
 
-	glutPostRedisplay();
+		glutPostRedisplay();
+	}
 }
 
 void Luces()
 {
-	GLfloat luz_posicion[] = {1.0, 1.0, 1.0, 0.0};
-	GLfloat luz_ambiente[] = {0.2, 0.2, 0.2, 1.0};
-	GLfloat luz_difusa[] = {0.2, 0.2, 0.2, 1.0};
-	GLfloat luz_especular[] = {1.0, 1.0, 1.0, 1.0};
+	GLfloat luz_posicion1[] = {1.0, 1.0, 1.0, 0.0};
+	GLfloat luz_ambiente1[] = {0.2, 0.2, 0.2, 1.0};
+	GLfloat luz_difusa1[] = {0.2, 0.2, 0.2, 1.0};
+	GLfloat luz_especular1[] = {1.0, 1.0, 1.0, 1.0};
 
-	glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, luz_ambiente);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, luz_difusa);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, luz_especular);
+	glLightfv(GL_LIGHT0, GL_POSITION, luz_posicion1);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, luz_ambiente1);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, luz_difusa1);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, luz_especular1);
+
+	GLfloat luz_posicion2[] = {0.0, 1.0, 0.0, 0.0};
+	GLfloat luz_ambiente2[] = {0.2, 0.2, 0.2, 1.0};
+	GLfloat luz_difusa2[] = {0.2, 0.2, 0.2, 1.0};
+	GLfloat luz_especular2[] = {0.9, 0.8, 0.2, 1.0};
+
+	glLightfv(GL_LIGHT1, GL_POSITION, luz_posicion2);
+	glLightfv(GL_LIGHT1, GL_AMBIENT, luz_ambiente2);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, luz_difusa2);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, luz_especular2);
 
 	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
 }
 
 //**********-o*****************************************************************
@@ -324,6 +340,7 @@ void normal_key(unsigned char Tecla1, int x, int y)
 		t_objeto = ARTICULADO;
 		break;
 	case ' ':
+		/*
 		animacion = !animacion;
 		articulado.brazo_izquierdo.giro_brazo_1 = -90.0;
 		articulado.brazo_izquierdo.giro_brazo_2 = 45.0;
@@ -334,6 +351,8 @@ void normal_key(unsigned char Tecla1, int x, int y)
 		articulado.pierna.giro_pierna_superior = -45.0;
 		articulado.pierna.giro_pierna_inferior = 45.0;
 		articulado.cabeza.giro_cabeza = 0.0;
+		*/
+		rotarLuz = !rotarLuz;
 		break;
 	case '+':
 		if (animacion_cabeza < 2.0 && animacion_cabeza > -2.0)
@@ -544,7 +563,7 @@ int main(int argc, char *argv[])
 	// asignación de la funcion llamada "tecla_Especial" al evento correspondiente
 	glutSpecialFunc(special_key);
 
-	glutIdleFunc(movimiento);
+	//glutIdleFunc(movimiento);
 	glutIdleFunc(moverLuz);
 
 	// funcion de inicialización

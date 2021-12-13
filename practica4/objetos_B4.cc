@@ -170,10 +170,6 @@ void _triangulos3D::draw_iluminacion_suave()
 void _triangulos3D::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
 {
 
-	ambiente_difusa = _vertex4f(r1, g1, b1, 1.0);
-	especular = _vertex4f(0.0, 0.0, 0.0, 1.0);
-	brillo = 20;
-
 	switch (modo)
 	{
 	case POINTS:
@@ -318,6 +314,10 @@ _cubo::_cubo(float tam)
 
 	calcular_normales_caras();
 	calcular_normales_vertices();
+
+	ambiente_difusa = _vertex4f(0.4, 0.8, 0.9, 1.0);
+	especular = _vertex4f(0.5, 0.0, 0.5, 1.0);
+	brillo = 20;
 }
 
 //*************************************************************************
@@ -367,6 +367,10 @@ _piramide::_piramide(float tam, float al)
 
 	calcular_normales_caras();
 	calcular_normales_vertices();
+
+	ambiente_difusa = _vertex4f(0.9, 0.5, 0.1, 1.0);
+	especular = _vertex4f(0.0, 0.0, 0.0, 1.0);
+	brillo = 5;
 }
 
 //*************************************************************************
@@ -410,6 +414,10 @@ int _objeto_ply::parametros(char *archivo)
 
 	calcular_normales_caras();
 	calcular_normales_vertices();
+
+	ambiente_difusa = _vertex4f(0.7, 0.7, 0.7, 1.0);
+	especular = _vertex4f(0.0, 0.0, 0.0, 1.0);
+	brillo = 30;
 
 	return (0);
 }
@@ -590,6 +598,10 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num, char eje)
 
 	calcular_normales_caras();
 	calcular_normales_vertices();
+
+	ambiente_difusa = _vertex4f(1.0, 0.0, 0.0, 1.0);
+	especular = _vertex4f(0.0, 0.0, 0.0, 1.0);
+	brillo = 20;
 }
 
 _cono::_cono(float diametro, float altura, char eje)
@@ -616,6 +628,10 @@ _cono::_cono(float diametro, float altura, char eje)
 
 	calcular_normales_caras();
 	calcular_normales_vertices();
+
+	ambiente_difusa = _vertex4f(0.2, 0.6, 0.1, 1.0);
+	especular = _vertex4f(1.0, 1.0, 1.0, 1.0);
+	brillo = 50;
 }
 
 _esfera::_esfera(float diametro)
@@ -643,7 +659,17 @@ _esfera::_esfera(float diametro)
 	caras = esfera.caras;
 
 	calcular_normales_caras();
-	calcular_normales_vertices();
+	//calcular_normales_vertices();
+
+	normales_vertices.resize(vertices.size());
+	for(int i = 0; i < vertices.size(); i++)
+	{
+		normales_vertices[i] = vertices[i].normalize();
+	}
+
+	ambiente_difusa = _vertex4f(1.0, 0.5, 0.5, 1.0);
+	especular = _vertex4f(1.0, 1.0, 1.0, 1.0);
+	brillo = 10;
 }
 
 _cilindro::_cilindro(float radio, float altura, char eje)
@@ -673,6 +699,10 @@ _cilindro::_cilindro(float radio, float altura, char eje)
 
 	calcular_normales_caras();
 	calcular_normales_vertices();
+
+	ambiente_difusa = _vertex4f(0.4, 0.1, 0.6, 1.0);
+	especular = _vertex4f(1.0, 1.0, 1.0, 1.0);
+	brillo = 100;
 }
 
 // Modelo articulado monigote
@@ -894,6 +924,10 @@ _cuerpo::_cuerpo(float tam)
 
 	calcular_normales_caras();
 	calcular_normales_vertices();
+
+	ambiente_difusa = _vertex4f(1.0, 0.0, 0.0, 1.0);
+	especular = _vertex4f(0.0, 0.0, 0.0, 1.0);
+	brillo = 20;
 }
 
 _cabeza::_cabeza()
