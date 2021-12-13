@@ -240,6 +240,17 @@ void movimiento()
 float angulo = 0.0;
 GLfloat posicion[] = {3.0, 3.0, 0.0, 1.0};
 
+void moverLuz()
+{
+	angulo += 0.5;
+	glPushMatrix();
+	glRotated(angulo, 0, 1, 0);
+	glLightfv(GL_LIGHT0, GL_POSITION, posicion);
+	glPopMatrix();
+
+	glutPostRedisplay();
+}
+
 void Luces()
 {
 	GLfloat luz_posicion[] = {1.0, 1.0, 1.0, 0.0};
@@ -253,7 +264,6 @@ void Luces()
 	glLightfv(GL_LIGHT0, GL_SPECULAR, luz_especular);
 
 	glEnable(GL_LIGHT0);
-
 }
 
 //**********-o*****************************************************************
@@ -535,6 +545,7 @@ int main(int argc, char *argv[])
 	glutSpecialFunc(special_key);
 
 	glutIdleFunc(movimiento);
+	glutIdleFunc(moverLuz);
 
 	// funcion de inicialización
 	initialize();
