@@ -130,28 +130,28 @@ void draw_objects()
 	switch (t_objeto)
 	{
 	case CUBO:
-		cubo.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
+		cubo.draw(modo, 0.2, 0.8, 0.75, 0.0, 1.0, 0.0, 2);
 		break;
 	case PIRAMIDE:
-		piramide.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
+		piramide.draw(modo, 0.9, 0.5, 0.1, 0.0, 1.0, 0.0, 2);
 		break;
 	case OBJETO_PLY:
-		ply.draw(modo, 1.0, 0.6, 0.0, 0.0, 1.0, 0.3, 2);
+		ply.draw(modo, 0.7, 0.7, 0.7, 0.0, 1.0, 0.3, 2);
 		break;
 	case ROTACION:
 		rotacion.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
 		break;
 	case CONO:
-		cono.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
+		cono.draw(modo, 0.2, 0.6, 0.1, 0.0, 1.0, 0.0, 2);
 		break;
 	case CILINDRO:
-		cilindro.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
+		cilindro.draw(modo, 0.4, 0.1, 0.6, 0.0, 1.0, 0.0, 2);
 		break;
 	case ESFERA:
 		esfera.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
 		break;
 	case ARTICULADO:
-		articulado.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
+		articulado.draw(modo, 0.1, 0.3, 0.7, 0.0, 1.0, 0.0, 2);
 		break;
 	}
 }
@@ -508,7 +508,7 @@ int main(int argc, char *argv[])
 {
 
 	_objeto_ply objeto_rotado;
-	objeto_rotado.parametros(argv[1]);
+	objeto_rotado.parametros("peon");
 	rotacion.parametros(objeto_rotado.vertices, 10, 'y');
 
 	// se llama a la inicialización de glut
@@ -551,7 +551,7 @@ int main(int argc, char *argv[])
 	initialize();
 
 	// creación del objeto ply
-	ply.parametros(argv[1]);
+	ply.parametros("beethoven");
 
 	//ply1 = new _objeto_ply(argv[1]);
 

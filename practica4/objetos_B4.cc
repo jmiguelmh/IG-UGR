@@ -69,7 +69,7 @@ void _triangulos3D::draw_solido(float r, float g, float b)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	glBegin(GL_TRIANGLES);
-
+	glColor3f(r, g, b);
 	for (int i = 0; i < caras.size(); i++)
 	{
 		Vertex_1 = caras[i]._0;
