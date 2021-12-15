@@ -6,7 +6,7 @@
 #include <ctype.h>
 #include <math.h>
 #include <vector>
-#include "objetos_B4.h"
+#include "objetos_B5.h"
 
 using namespace std;
 
@@ -57,6 +57,66 @@ _esfera esfera(2);
 _monigote articulado;
 
 // _objeto_ply *ply1;
+
+// Mouse
+
+int estadoRaton[3], xc, yc, cambio = 0;
+int Ancho = 450, Alto = 450;
+float factor = 1.0;
+
+
+
+void clickRaton(int boton, int estado, int x, int y)
+{
+	if (boton == GLUT_RIGHT_BUTTON)
+	{
+		if (estado == GLUT_DOWN)
+		{
+			estadoRaton[2] = 1;
+			xc = x;
+			yc = y;
+		}
+		else
+			estadoRaton[2] = 1;
+	}
+	if (boton == GLUT_LEFT_BUTTON)
+	{
+		if (estado == GLUT_DOWN)
+		{
+			estadoRaton[2] = 2;
+			xc = x;
+			yc = y;
+			//pick(xc, yc);
+		}
+	}
+}
+
+void getCamara(GLfloat *x, GLfloat *y)
+{
+	*x = Observer_angle_x;
+	*y = Observer_angle_y;
+}
+
+void setCamara(GLfloat x, GLfloat y)
+{
+	Observer_angle_x = x;
+	Observer_angle_y = y;
+}
+
+void RatonMovido(int x, int y)
+{
+	float x0, y0, xn, yn;
+	if (estadoRaton[2] == 1)
+	{
+		getCamara(&x0, &y0);
+		yn = y0 + (x - xc);
+		xn = x0 + (y - yc);
+		setCamara(xn, yn);
+		xc = x;
+		yc = y;
+		glutPostRedisplay();
+	}
+}
 
 //**************************************************************************
 //
@@ -244,7 +304,7 @@ GLfloat posicion_luz1[] = {3.0, 3.0, 3.0, 1.0};
 
 void moverLuz()
 {
-	if(rotarLuz)
+	if (rotarLuz)
 	{
 		angulo_luz1 += 0.5;
 		glPushMatrix();
@@ -525,9 +585,10 @@ void initialize(void)
 
 int main(int argc, char *argv[])
 {
-
+	char objeto_revolucion[5] = "peon";
+	char objeto_ply[10] = "beethoven";
 	_objeto_ply objeto_rotado;
-	objeto_rotado.parametros("peon");
+	objeto_rotado.parametros(objeto_revolucion);
 	rotacion.parametros(objeto_rotado.vertices, 10, 'y');
 
 	// se llama a la inicialización de glut
@@ -552,7 +613,7 @@ int main(int argc, char *argv[])
 
 	// llamada para crear la ventana, indicando el titulo (no se visualiza hasta que se llama
 	// al bucle de eventos)
-	glutCreateWindow("PRACTICA - 4");
+	glutCreateWindow("PRACTICA - 5");
 
 	// asignación de la funcion llamada "dibujar" al evento de dibujo
 	glutDisplayFunc(draw);
@@ -565,12 +626,13 @@ int main(int argc, char *argv[])
 
 	//glutIdleFunc(movimiento);
 	glutIdleFunc(moverLuz);
-
+	glutMouseFunc(clickRaton);
+	glutMotionFunc(RatonMovido);
 	// funcion de inicialización
 	initialize();
 
 	// creación del objeto ply
-	ply.parametros("beethoven");
+	ply.parametros(objeto_ply);
 
 	//ply1 = new _objeto_ply(argv[1]);
 
