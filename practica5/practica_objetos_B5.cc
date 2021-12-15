@@ -42,9 +42,15 @@ GLfloat Observer_angle_y;
 
 // variables que controlan la ventana y la transformacion de perspectiva
 GLfloat Size_x, Size_y, Front_plane, Back_plane;
+enum Proyection
+{
+	PERSPECTIVE,
+	ORTHO
+};
+Proyection camera_mode = PERSPECTIVE;
 
 // variables que determninan la posicion y tamaño de la ventana X
-int Window_x = 50, Window_y = 50, Window_width = 450, Window_high = 450;
+int Window_x = 50, Window_y = 50, Window_width = 500, Window_height = 500;
 
 // objetos
 _cubo cubo;
@@ -64,7 +70,39 @@ int estadoRaton[3], xc, yc, cambio = 0;
 int Ancho = 450, Alto = 450;
 float factor = 1.0;
 
+void pick(int x, int y)
+{
+	//Viweport
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
 
+	//Seleccionamos buffer
+	GLuint buffer[100];
+	glSelectBuffer(100, buffer);
+
+	//Entramos en modo seleccion
+	glRenderMode(GL_SELECT);
+
+	//Inicializar pila de nombres
+	glInitNames();
+	glPushName(0);
+
+	//Matriz de seleccion
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPickMatrix(x, viewport[3] - y, 1, 1, viewport);
+	//glFrustum(-Window_width, Window_width, -Window_height, Window_height, Front_plane, Back_plane);
+	const GLfloat ratio = GLfloat(Window_height) / GLfloat(Window_width);
+	switch (camera_mode)
+	{
+	case PERSPECTIVE:
+		glFrustum(-Size_x, Size_x, -Size_y, Size_y, Front_plane, Back_plane);
+		break;
+	case ORTHO:
+		glOrtho(-Size_x * Observer_distance, Size_x * Observer_distance, -Size_y * Observer_distance, Size_y * Observer_distance, Front_plane, Back_plane);
+		break;
+	}
+}
 
 void clickRaton(int boton, int estado, int x, int y)
 {
@@ -86,7 +124,7 @@ void clickRaton(int boton, int estado, int x, int y)
 			estadoRaton[2] = 2;
 			xc = x;
 			yc = y;
-			//pick(xc, yc);
+			pick(xc, yc);
 		}
 	}
 }
@@ -132,7 +170,7 @@ void clean_window()
 // Funcion para definir la transformación de proyeccion
 //***************************************************************************
 
-void change_projection()
+void change_projection(Proyection pro = PERSPECTIVE)
 {
 
 	glMatrixMode(GL_PROJECTION);
@@ -140,7 +178,10 @@ void change_projection()
 
 	// formato(x_minimo,x_maximo, y_minimo, y_maximo,plano_delantero, plano_traser)
 	//  plano_delantero>0  plano_trasero>PlanoDelantero)
-	glFrustum(-Size_x, Size_x, -Size_y, Size_y, Front_plane, Back_plane);
+	if (pro == PERSPECTIVE)
+		glFrustum(-Size_x, Size_x, -Size_y, Size_y, Front_plane, Back_plane);
+	else
+		glOrtho(-Size_x * Observer_distance, Size_x * Observer_distance, -Size_y * Observer_distance, Size_y * Observer_distance, Front_plane, Back_plane);
 }
 
 //**************************************************************************
@@ -246,7 +287,7 @@ void change_window_size(int Ancho1, int Alto1)
 
 	Aspect_ratio = (float)Alto1 / (float)Ancho1;
 	Size_y = Size_x * Aspect_ratio;
-	change_projection();
+	change_projection(camera_mode);
 	glViewport(0, 0, Ancho1, Alto1);
 	glutPostRedisplay();
 }
@@ -399,6 +440,16 @@ void normal_key(unsigned char Tecla1, int x, int y)
 	case '8':
 		t_objeto = ARTICULADO;
 		break;
+	case '9':
+		camera_mode = PERSPECTIVE;
+		change_projection(camera_mode);
+		glViewport(0, 0, Window_width, Window_height);
+		break;
+	case '0':
+		camera_mode = ORTHO;
+		change_projection(camera_mode);
+		glViewport(0, 0, Window_width, Window_height);
+		break;
 	case ' ':
 		/*
 		animacion = !animacion;
@@ -473,9 +524,19 @@ void special_key(int Tecla1, int x, int y)
 		break;
 	case GLUT_KEY_PAGE_UP:
 		Observer_distance *= 1.2;
+		if (camera_mode == ORTHO)
+		{
+			change_projection(camera_mode);
+			glViewport(0, 0, Window_width, Window_height);
+		}
 		break;
 	case GLUT_KEY_PAGE_DOWN:
 		Observer_distance /= 1.2;
+		if (camera_mode == ORTHO)
+		{
+			change_projection(camera_mode);
+			glViewport(0, 0, Window_width, Window_height);
+		}
 		break;
 	case GLUT_KEY_F1:
 		if (articulado.brazo_izquierdo.giro_brazo_1 < 0.0)
@@ -573,7 +634,7 @@ void initialize(void)
 	// se habilita el z-bufer
 	glEnable(GL_DEPTH_TEST);
 	change_projection();
-	glViewport(0, 0, Window_width, Window_high);
+	glViewport(0, 0, Window_width, Window_height);
 }
 
 //***************************************************************************
@@ -609,7 +670,7 @@ int main(int argc, char *argv[])
 	glutInitWindowPosition(Window_x, Window_y);
 
 	// tamaño de la ventana (ancho y alto)
-	glutInitWindowSize(Window_width, Window_high);
+	glutInitWindowSize(Window_width, Window_height);
 
 	// llamada para crear la ventana, indicando el titulo (no se visualiza hasta que se llama
 	// al bucle de eventos)

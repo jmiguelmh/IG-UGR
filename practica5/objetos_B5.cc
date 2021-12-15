@@ -644,17 +644,17 @@ _esfera::_esfera(float diametro)
 	punto.z = 0;
 	perfil.push_back(punto);
 
-	esfera.parametros(perfil, 50, 'z');
+	esfera.parametros(perfil, 100, 'z');
 	perfil = esfera.vertices;
 
-	for (int i = 0; i < 26; i++)
+	for (int i = 0; i < 51; i++)
 		perfil.pop_back(); //me quedo con media esfera
 	esfera.caras.clear();
 	vector<_vertex3f>::iterator it = perfil.end();
 	it--;
 	it->x = 0;
 
-	esfera.parametros(perfil, 50, 'y');
+	esfera.parametros(perfil, 100, 'y');
 	vertices = esfera.vertices;
 	caras = esfera.caras;
 
