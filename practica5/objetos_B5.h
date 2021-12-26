@@ -15,7 +15,8 @@ typedef enum
 	SOLID_CHESS,
 	SOLID,
 	FLAT,
-	SMOOTH
+	SMOOTH,
+	SELECT
 } _modo;
 
 //*************************************************************************
@@ -42,6 +43,7 @@ public:
 	void draw_aristas(float r, float g, float b, int grosor);
 	void draw_solido(float r, float g, float b);
 	void draw_solido_ajedrez(float r1, float g1, float b1, float r2, float g2, float b2);
+	void draw_seleccion(int r, int g, int b);
 	void draw_iluminacion_plana();
 	void draw_iluminacion_suave();
 	void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
@@ -205,10 +207,16 @@ class _monigote : public _triangulos3D
 public:
 	_monigote();
 	void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+	void seleccion();
 
 	_brazo_izquierdo brazo_izquierdo;
 	_brazo_derecho brazo_derecho;
 	_pierna pierna;
 	_cuerpo cuerpo;
 	_cabeza cabeza;
+
+	float color_pick[3];
+	int color_selec[3][6];
+	int activo[6];
+	int piezas;
 };

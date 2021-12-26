@@ -70,38 +70,56 @@ int estadoRaton[3], xc, yc, cambio = 0;
 int Ancho = 450, Alto = 450;
 float factor = 1.0;
 
-void pick(int x, int y)
+void procesar_color(unsigned char color[3])
 {
-	//Viweport
+	int i;
+
+	for (i = 0; i < articulado.piezas; i++)
+	{
+		if (color[0] == articulado.color_selec[0][i])
+		{
+			if (articulado.activo[i] == 0)
+			{
+				articulado.activo[i] = 1;
+			}
+			else
+			{
+				articulado.activo[i] = 0;
+			}
+			glutPostRedisplay();
+		}
+	}
+}
+
+void pick_color(int x, int y)
+{
 	GLint viewport[4];
+	unsigned char pixel[3];
+
 	glGetIntegerv(GL_VIEWPORT, viewport);
+	glReadBuffer(GL_BACK);
+	glReadPixels(x, viewport[3] - y, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, (GLubyte *)&pixel[0]);
+	printf(" valor x %d, valor y %d, color %d, %d, %d \n", x, y, pixel[0], pixel[1], pixel[2]);
 
-	//Seleccionamos buffer
-	GLuint buffer[100];
-	glSelectBuffer(100, buffer);
+	procesar_color(pixel);
+}
 
-	//Entramos en modo seleccion
-	glRenderMode(GL_SELECT);
+//**************************************************************************
+// Funcion para definir la transformación de proyeccion
+//***************************************************************************
 
-	//Inicializar pila de nombres
-	glInitNames();
-	glPushName(0);
+void change_projection(Proyection pro = PERSPECTIVE)
+{
 
-	//Matriz de seleccion
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPickMatrix(x, viewport[3] - y, 1, 1, viewport);
-	//glFrustum(-Window_width, Window_width, -Window_height, Window_height, Front_plane, Back_plane);
-	const GLfloat ratio = GLfloat(Window_height) / GLfloat(Window_width);
-	switch (camera_mode)
-	{
-	case PERSPECTIVE:
+
+	// formato(x_minimo,x_maximo, y_minimo, y_maximo,plano_delantero, plano_traser)
+	//  plano_delantero>0  plano_trasero>PlanoDelantero)
+	if (pro == PERSPECTIVE)
 		glFrustum(-Size_x, Size_x, -Size_y, Size_y, Front_plane, Back_plane);
-		break;
-	case ORTHO:
+	else
 		glOrtho(-Size_x * Observer_distance, Size_x * Observer_distance, -Size_y * Observer_distance, Size_y * Observer_distance, Front_plane, Back_plane);
-		break;
-	}
 }
 
 void clickRaton(int boton, int estado, int x, int y)
@@ -124,7 +142,25 @@ void clickRaton(int boton, int estado, int x, int y)
 			estadoRaton[2] = 2;
 			xc = x;
 			yc = y;
-			pick(xc, yc);
+			pick_color(xc, yc);
+		}
+	}
+	if (boton == 3)
+	{
+		Observer_distance /= 1.2;
+		if (camera_mode == ORTHO)
+		{
+			change_projection(camera_mode);
+			glViewport(0, 0, Window_width, Window_height);
+		}
+	}
+	if (boton == 4)
+	{
+		Observer_distance *= 1.2;
+		if (camera_mode == ORTHO)
+		{
+			change_projection(camera_mode);
+			glViewport(0, 0, Window_width, Window_height);
 		}
 	}
 }
@@ -164,24 +200,6 @@ void clean_window()
 {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-//**************************************************************************
-// Funcion para definir la transformación de proyeccion
-//***************************************************************************
-
-void change_projection(Proyection pro = PERSPECTIVE)
-{
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	// formato(x_minimo,x_maximo, y_minimo, y_maximo,plano_delantero, plano_traser)
-	//  plano_delantero>0  plano_trasero>PlanoDelantero)
-	if (pro == PERSPECTIVE)
-		glFrustum(-Size_x, Size_x, -Size_y, Size_y, Front_plane, Back_plane);
-	else
-		glOrtho(-Size_x * Observer_distance, Size_x * Observer_distance, -Size_y * Observer_distance, Size_y * Observer_distance, Front_plane, Back_plane);
 }
 
 //**************************************************************************
@@ -265,12 +283,21 @@ void draw_objects()
 
 void draw(void)
 {
-
+	glDrawBuffer(GL_FRONT);
 	clean_window();
 	change_observer();
 	draw_axis();
 	draw_objects();
-	glutSwapBuffers();
+
+	if (t_objeto == ARTICULADO)
+	{
+		glDrawBuffer(GL_BACK);
+		clean_window();
+		change_observer();
+		articulado.seleccion();
+	}
+
+	glFlush();
 }
 
 //***************************************************************************

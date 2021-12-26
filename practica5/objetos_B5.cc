@@ -163,6 +163,20 @@ void _triangulos3D::draw_iluminacion_suave()
 	glDisable(GL_NORMALIZE);
 }
 
+void _triangulos3D::draw_seleccion(int r, int g, int b)
+{
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glColor3ub(r, g, b);
+	glBegin(GL_TRIANGLES);
+	for (int i = 0; i < caras.size(); i++)
+	{
+		glVertex3fv((GLfloat *)&vertices[caras[i]._0]);
+		glVertex3fv((GLfloat *)&vertices[caras[i]._1]);
+		glVertex3fv((GLfloat *)&vertices[caras[i]._2]);
+	}
+	glEnd();
+}
+
 //*************************************************************************
 // dibujar con distintos modos
 //*************************************************************************
@@ -189,6 +203,9 @@ void _triangulos3D::draw(_modo modo, float r1, float g1, float b1, float r2, flo
 		break;
 	case SMOOTH:
 		draw_iluminacion_suave();
+		break;
+	case SELECT:
+		draw_seleccion(r1, g1, b1);
 		break;
 	}
 }
@@ -662,7 +679,7 @@ _esfera::_esfera(float diametro)
 	//calcular_normales_vertices();
 
 	normales_vertices.resize(vertices.size());
-	for(int i = 0; i < vertices.size(); i++)
+	for (int i = 0; i < vertices.size(); i++)
 	{
 		normales_vertices[i] = vertices[i].normalize();
 	}
@@ -984,47 +1001,133 @@ _monigote::_monigote()
 {
 	calcular_normales_caras();
 	calcular_normales_vertices();
+
+	int c = 100;
+	piezas = 6;
+	color_pick[0] = 1.0;
+	color_pick[1] = 0.0;
+	color_pick[2] = 0.0;
+	for (int i = 0; i < piezas; i++)
+	{
+		activo[i] = 0;
+		color_selec[0][i] = color_selec[1][i] = color_selec[2][i] = c;
+		c = c + 20;
+	}
 };
 
 void _monigote::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
 {
+	float r_p, g_p, b_p;
+
+	r_p = color_pick[0];
+	g_p = color_pick[1];
+	b_p = color_pick[2];
+
 	// Cuerpo
 	glPushMatrix();
 	glScalef(1.0, 1.25, 0.5);
-	cuerpo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	if (activo[0] == 1)
+		cuerpo.draw(modo, r_p, g_p, b_p, r_p, g_p, b_p, grosor);
+	else
+		cuerpo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
 
 	// Brazo izquierdo
 	glPushMatrix();
 	glTranslatef(0.5, 1.15, 0.0);
 	glScalef(0.5, 0.5, 0.5);
-	brazo_izquierdo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	if (activo[1] == 1)
+		brazo_izquierdo.draw(modo, r_p, g_p, b_p, r_p, g_p, b_p, grosor);
+	else
+		brazo_izquierdo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
 
 	// Brazo derecha
 	glPushMatrix();
 	glTranslatef(-0.5, 1.15, 0.0);
 	glScalef(0.5, 0.5, 0.5);
-	brazo_derecho.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	if (activo[2] == 1)
+		brazo_derecho.draw(modo, r_p, g_p, b_p, r_p, g_p, b_p, grosor);
+	else
+		brazo_derecho.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
 
 	// Pierna izquierda
 	glPushMatrix();
 	glTranslatef(0.2, 0.0, 0.0);
 	glScalef(0.5, 0.5, 0.5);
-	pierna.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	if (activo[3] == 1)
+		pierna.draw(modo, r_p, g_p, b_p, r_p, g_p, b_p, grosor);
+	else
+		pierna.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
 
 	// Pierna derecha
 	glPushMatrix();
 	glTranslatef(-0.2, 0.0, 0.0);
 	glScalef(0.5, 0.5, 0.5);
-	pierna.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	if (activo[4] == 1)
+		pierna.draw(modo, r_p, g_p, b_p, r_p, g_p, b_p, grosor);
+	else
+		pierna.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
 
 	// Cabeza
 	glPushMatrix();
 	glTranslatef(0.0, 1.25, 0.0);
-	cabeza.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+	if (activo[5] == 1)
+		cabeza.draw(modo, r_p, g_p, b_p, r_p, g_p, b_p, grosor);
+	else
+		cabeza.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
 	glPopMatrix();
 };
+
+void _monigote::seleccion()
+{
+	int c;
+
+	c = color_selec[0][0];
+	glPushMatrix();
+	glScalef(1.0, 1.25, 0.5);
+	cuerpo.draw(SELECT, c, c, c, c, c, c, 1);
+	glPopMatrix();
+
+	// Brazo izquierdo
+	c = color_selec[0][1];
+	glPushMatrix();
+	glTranslatef(0.5, 1.15, 0.0);
+	glScalef(0.5, 0.5, 0.5);
+	brazo_izquierdo.draw(SELECT, c, c, c, c, c, c, 1);
+	glPopMatrix();
+
+	// Brazo derecha
+	c = color_selec[0][2];
+	glPushMatrix();
+	glTranslatef(-0.5, 1.15, 0.0);
+	glScalef(0.5, 0.5, 0.5);
+	brazo_derecho.draw(SELECT, c, c, c, c, c, c, 1);
+	glPopMatrix();
+
+	// Pierna izquierda
+	c = color_selec[0][3];
+	glPushMatrix();
+	glTranslatef(0.2, 0.0, 0.0);
+	glScalef(0.5, 0.5, 0.5);
+	pierna.draw(SELECT, c, c, c, c, c, c, 1);
+	glPopMatrix();
+
+	// Pierna derecha
+	c = color_selec[0][4];
+	glPushMatrix();
+	glTranslatef(-0.2, 0.0, 0.0);
+	glScalef(0.5, 0.5, 0.5);
+	pierna.draw(SELECT, c, c, c, c, c, c, 1);
+	glPopMatrix();
+
+	// Cabeza
+	c = color_selec[0][5];
+	glPushMatrix();
+	glTranslatef(0.0, 1.25, 0.0);
+	cabeza.draw(SELECT, c, c, c, c, c, c, 1);
+	glPopMatrix();
+}
