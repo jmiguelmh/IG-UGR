@@ -14,6 +14,7 @@ La práctica contiene el código para representar una pirámide y un cubo. Tambi
 La práctica contiene el código para representar objetos de revolución, con los que se han creado las primitivas cono, cilindro y esfera. Además permite crear cualquier cuerpo de revolución a partir del prefil de dicho objeto. También se ha implementado una función que permite cargar modelos PLY para poder ser representados en OpenGL.
 El programa hay que ejecutarlo con un modelo PLY pasado por parámetro, por ejemplo:<br />
 *./practica_objetos_B2 beethoven*<br />
+
 Las teclas asignadas son:
 - Visión de puntos (tecla P)
 - Visión de líneas (tecla L)
