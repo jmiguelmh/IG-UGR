@@ -68,7 +68,7 @@ Las teclas para controlar el movimiento del modelo jerárquico son:
 - Disminuir velocidad de animación (tecla -)
 
 ## Práctica 4 - Luces y materiales
-La práctica contiene el código para añadir dos luces a la escena (una estática y otra que se mueve), materiales a las primitivas y dos modos de visión nuevos (flat y smooth).
+La práctica contiene el código para añadir dos luces a la escena (una estática y otra que se mueve), materiales a las primitivas y dos modos de visión nuevos (flat y smooth). Se ha eliminado la necesidad de pasar por parámetro un fichero con un modelo PLY. Para ejecutar el programa se hace sin argumentos.
 
 Las teclas asignadas son:
 - Salir (tecla Q)
